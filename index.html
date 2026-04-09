@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <title>SubTrack Elite | Personal Asset Intelligence</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ==========================================================================
+           ULTRA-PREMIUM LIGHT DESIGN SYSTEM
+           ========================================================================== */
+        :root {
+            --surface-bg: #fdfdfe; 
+            --surface-card: #ffffff;
+            --surface-card-hover: #f9fafb;
+            --surface-input: #f8fafc;
+            
+            --brand-primary: #1a1a1a; /* Dark Contrast for High-End Look */
+            --brand-indigo: #4f46e5;
+            --brand-accent: #e11d48;
+            --brand-success: #10b981;
+            
+            --text-primary: #0a0a0a;
+            --text-secondary: #525252;
+            --text-tertiary: #a3a3a3;
+            
+            --border-subtle: rgba(0, 0, 0, 0.06);
+            --border-focus: rgba(79, 70, 229, 0.3);
+            
+            --shadow-lux: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+            --shadow-button: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            
+            --radius-sm: 10px;
+            --radius-md: 18px;
+            --radius-lg: 32px;
+            --radius-pill: 9999px;
+
+            --transition-main: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        /* ==========================================================================
+           CORE RESET
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--surface-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0px, transparent 50%), 
+                              radial-gradient(at 100% 0%, rgba(225, 29, 72, 0.02) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ==========================================================================
+           ANIMATIONS
+           ========================================================================== */
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes sideReveal {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .reveal { animation: reveal 1s var(--transition-main) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        /* ==========================================================================
+           NAVIGATION & BRANDING
+           ========================================================================== */
+        .top-nav {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(15px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1.25rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.04em; display: flex; align-items: center; gap: 0.7rem; color: #000; }
+        .logo i { color: var(--brand-indigo); font-size: 1.6rem; }
+
+        .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
+        
+        .manifesto-trigger {
+            background: transparent; border: 1px solid var(--border-subtle);
+            padding: 0.7rem 1.4rem; border-radius: var(--radius-pill);
+            font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            transition: var(--transition-main); display: flex; align-items: center; gap: 0.5rem;
+        }
+        .manifesto-trigger:hover { background: #000; color: #fff; transform: translateY(-2px); }
+
+        .status-tag {
+            background: #ecfdf5; color: #065f46; font-size: 0.75rem; font-weight: 800;
+            padding: 0.4rem 1rem; border-radius: var(--radius-pill); display: flex; align-items: center; gap: 0.5rem;
+        }
+        .status-tag .dot-box { position: relative; width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
+        .status-tag .dot-box::after { content: ''; position: absolute; inset: 0; background: #10b981; border-radius: 50%; animation: pulseDot 2s infinite; }
+
+        /* ==========================================================================
+           MAIN LAYOUT
+           ========================================================================== */
+        .container { max-width: 1440px; margin: 0 auto; padding: 3rem 5%; }
+
+        .hero-section { text-align: center; margin-bottom: 4rem; }
+        .hero-section h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: -0.05em; margin-bottom: 1rem; color: #000; }
+        .hero-section p { font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        /* Bento Grid Architecture */
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(160px, auto);
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--surface-card); border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); padding: 2rem; position: relative;
+            transition: var(--transition-main); overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+        .card:hover { border-color: rgba(0,0,0,0.15); transform: translateY(-4px); box-shadow: var(--shadow-lux); }
+
+        /* Bento Mapping */
+        .c-stat { grid-column: span 4; display: flex; flex-direction: column; justify-content: space-between; }
+        .c-chart { grid-column: span 8; grid-row: span 3; }
+        .c-form { grid-column: span 4; grid-row: span 3; background: #fafafa; }
+        .c-list { grid-column: span 12; }
+
+        /* Stats Design */
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .stat-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .stat-label { font-size: 0.85rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; }
+        .stat-value { font-size: 2.8rem; font-weight: 900; color: #000; letter-spacing: -0.04em; }
+
+        /* Form Controls */
+        .form-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.6rem; }
+        .input-wrap { margin-bottom: 1.2rem; }
+        .input-wrap label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        
+        .elite-input {
+            width: 100%; padding: 1rem 1.2rem; background: #fff;
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+            font-size: 0.95rem; font-weight: 600; transition: var(--transition-main);
+        }
+        .elite-input:focus { border-color: #000; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); }
+
+        .btn-submit {
+            width: 100%; padding: 1.1rem; background: #000; color: #fff;
+            border: none; border-radius: var(--radius-sm); font-weight: 800;
+            cursor: pointer; transition: var(--transition-main); margin-top: 1rem;
+            display: flex; justify-content: center; align-items: center; gap: 0.7rem;
+        }
+        .btn-submit:hover { background: var(--brand-indigo); transform: scale(1.02); }
+
+        /* Table Design */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 1rem; }
+        .elite-table { width: 100%; border-collapse: separate; border-spacing: 0 0.8rem; }
+        .elite-table th { text-align: left; padding: 1rem; font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; }
+        .elite-table td { padding: 1.2rem 1rem; background: #fff; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+        .elite-table tr td:first-child { border-left: 1px solid var(--border-subtle); border-radius: 15px 0 0 15px; }
+        .elite-table tr td:last-child { border-right: 1px solid var(--border-subtle); border-radius: 0 15px 15px 0; }
+
+        .service-info { display: flex; align-items: center; gap: 1rem; }
+        .service-icon { width: 44px; height: 44px; border-radius: 10px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .service-name { font-weight: 800; font-size: 1rem; color: #000; }
+
+        .badge { padding: 0.4rem 0.9rem; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; }
+        .badge-safe { background: #f0fdf4; color: #16a34a; }
+        .badge-urgent { background: #fff1f2; color: #e11d48; }
+
+        /* ==========================================================================
+           MODALS
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 2000; background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center;
+            padding: 2rem; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .modal-body {
+            background: #fff; width: 100%; max-width: 650px; padding: 3.5rem;
+            border-radius: var(--radius-lg); border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lux); transform: translateY(30px); transition: transform 0.5s var(--transition-main);
+        }
+        .modal-close { position: absolute; top: 2rem; right: 2rem; font-size: 1.5rem; cursor: pointer; color: var(--text-tertiary); transition: 0.3s; }
+        .modal-close:hover { color: #000; }
+
+        /* ==========================================================================
+           FOOTER & CONTACT
+           ========================================================================== */
+        .elite-footer {
+            margin-top: 5rem; padding: 4rem 5% 2rem; border-top: 1px solid var(--border-subtle);
+            background: #fff;
+        }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 4rem; align-items: start; }
+        
+        .contact-card {
+            background: #fafafa; border: 1px solid var(--border-subtle);
+            padding: 2.5rem; border-radius: var(--radius-md); text-align: left;
+        }
+        .contact-card h4 { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: var(--brand-indigo); margin-bottom: 1.5rem; }
+        .contact-info-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .contact-info-row i { font-size: 1.2rem; color: #000; width: 25px; }
+        .contact-info-row span { font-weight: 700; font-size: 1.1rem; color: #000; }
+        .contact-info-row a { color: #000; text-decoration: none; border-bottom: 2px solid var(--border-subtle); transition: 0.3s; }
+        .contact-info-row a:hover { border-color: var(--brand-indigo); }
+
+        .footer-bottom {
+            margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);
+            display: flex; justify-content: space-between; align-items: center;
+            color: var(--text-tertiary); font-size: 0.85rem; font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .c-chart, .c-form { grid-column: span 12; }
+            .c-stat { grid-column: span 12; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="logo">
+            <i class="fas fa-fingerprint"></i> SubTrack<span>Elite</span>
+        </div>
+        <div class="nav-actions">
+            <div class="status-tag">
+                <div class="dot-box"></div>
+                Secure Local Node Active
+            </div>
+            <button class="manifesto-trigger" onclick="toggleModal('manifesto', true)">
+                Manifesto & Gizlilik
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="hero-section reveal">
+            <h1>Varlık Yönetiminin Geleceği.</h1>
+            <p>Verinizi buluta değil, kendi cihazınıza emanet edin. Tamamen yerel, tamamen güvenli ve profesyonel.</p>
+        </header>
+
+        <div class="bento-grid">
+            <div class="card c-stat reveal delay-1">
+                <div class="stat-header">
+                    <span class="stat-label">Aylık Net Çıkış</span>
+                    <div class="stat-icon" style="background: #f0f9ff; color: #0ea5e9;"><i class="fas fa-receipt"></i></div>
+                </div>
+                <div class="stat-value" id="totalM">0.00 ₺</div>
+            </div>
+
+            <div class="card c-stat reveal delay-2">
+                <div class="stat-header">
+                    <span class="stat-label">Yıllık Projeksiyon</span>
+                    <div class="stat-icon" style="background: #fff1f2; color: #e11d48;"><i class="fas fa-calendar-check"></i></div>
+                </div>
+                <div class="stat-value" id="totalY">0.00 ₺</div>
+            </div>
+
+            <div class="card c-stat reveal delay-3">
+                <div class="stat-header">
+                    <span class="stat-label">Aktif Abonelikler</span>
+                    <div class="stat-icon" style="background: #f0fdf4; color: #10b981;"><i class="fas fa-shield-heart"></i></div>
+                </div>
+                <div class="stat-value" id="countS">0</div>
+            </div>
+
+            <div class="card c-form reveal delay-1">
+                <h3 class="form-title"><i class="fas fa-plus-square"></i> Portföye Ekle</h3>
+                <form id="addForm">
+                    <div class="input-wrap">
+                        <label>Servis / Platform</label>
+                        <input type="text" id="in_name" class="elite-input" placeholder="Örn: Amazon Prime" required>
+                    </div>
+                    <div class="input-wrap">
+                        <label>Kategori</label>
+                        <select id="in_cat" class="elite-input">
+                            <option value="Yazılım">Yazılım & Cloud</option>
+                            <option value="Eğlence">Eğlence & Medya</option>
+                            <option value="Eğitim">Eğitim & AI</option>
+                            <option value="Diğer">Diğer Giderler</option>
+                        </select>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-wrap">
+                            <label>Tutar (₺)</label>
+                            <input type="number" id="in_price" class="elite-input" step="0.01" required>
+                        </div>
+                        <div class="input-wrap">
+                            <label>Fatura Günü</label>
+                            <input type="number" id="in_day" class="elite-input" min="1" max="31" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Sisteme Kaydet</button>
+                </form>
+            </div>
+
+            <div class="card c-chart reveal delay-2">
+                <div class="stat-label" style="margin-bottom: 2rem;">Gider Dağılım Matrisi</div>
+                <div style="height: 350px;">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card c-list reveal delay-3">
+                <div class="stat-label" style="margin-bottom: 1rem;">Envanter Detayları</div>
+                <div class="table-container">
+                    <table class="elite-table">
+                        <thead>
+                            <tr>
+                                <th>Hizmet Kaydı</th>
+                                <th>Sınıflandırma</th>
+                                <th>Ödeme Takvimi</th>
+                                <th>Maliyet</th>
+                                <th style="text-align: right;">Yönet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="elite-footer">
+        <div class="footer-grid">
+            <div class="footer-info">
+                <div class="logo" style="margin-bottom: 1.5rem;">
+                    <i class="fas fa-fingerprint"></i> SubTrack Elite
+                </div>
+                <p style="color: var(--text-secondary); line-height: 1.8; max-width: 450px;">
+                    Bu platform, 2026 vizyonu ile geliştirilmiş, kar amacı gütmeyen bir açık veri güvenliği projesidir. Tüm verileriniz tarayıcınızın güvenli katmanında saklanır.
+                </p>
+            </div>
+            
+            <div class="contact-card reveal">
+                <h4>Bize Ulaşın</h4>
+                <div class="contact-info-row">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Yağız Konak</span>
+                </div>
+                <div class="contact-info-row">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <span><a href="mailto:yagizkonak14@gmail.com">yagizkonak14@gmail.com</a></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>&copy; 2026 SubTrack Elite Protocol. Built for Privacy.</div>
+            <div style="display:flex; gap: 2rem;">
+                <span>v3.4.0 Stable</span>
+                <span>Nisan 2026</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="modal-manifesto">
+        <div class="modal-body">
+            <i class="fas fa-times modal-close" onclick="toggleModal('manifesto', false)"></i>
+            <h2 style="font-size: 2.2rem; margin-bottom: 2rem; letter-spacing: -0.05em;">Gizlilik Manifestosu</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <p style="margin-bottom: 1.5rem;"><strong>1. Veri Egemenliği:</strong> Girdiğiniz hiçbir veri sunucularımıza iletilmez. Her şey LocalStorage üzerinde, sizin kontrolünüzdedir.</p>
+                <p style="margin-bottom: 1.5rem;"><strong>2. İzleme Karşıtı:</strong> Platformda Google Analytics, reklam izleyicileri veya Facebook Pixel gibi takip araçları bulunmaz.</p>
+                <p style="margin-bottom: 1.5rem;"><strong>3. Amacımız:</strong> Dijital abonelik çağında kullanıcıların finansal farkındalığını artırmak ve bunu yaparken gizlilikten ödün vermemelerini sağlamaktır.</p>
+                <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 2rem 0;">
+                <p style="font-style: italic; font-size: 0.9rem;">"En güvenli veri, hiç toplanmayan veridir."</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'elite_sub_data_v4';
+        let subs = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let chart = null;
+
+        // Init
+        window.onload = () => {
+            render();
+            document.querySelectorAll('.reveal').forEach((el, i) => {
+                el.style.opacity = '1';
+            });
+        };
+
+        function toggleModal(id, show) {
+            const m = document.getElementById('modal-' + id);
+            if(show) {
+                m.style.display = 'flex';
+                setTimeout(() => m.style.opacity = '1', 10);
+            } else {
+                m.style.opacity = '0';
+                setTimeout(() => m.style.display = 'none', 400);
+            }
+        }
+
+        document.getElementById('addForm').onsubmit = (e) => {
+            e.preventDefault();
+            const newSub = {
+                id: Math.random().toString(36).substr(2, 9),
+                name: document.getElementById('in_name').value,
+                cat: document.getElementById('in_cat').value,
+                price: parseFloat(document.getElementById('in_price').value),
+                day: parseInt(document.getElementById('in_day').value)
+            };
+            subs.push(newSub);
+            save();
+            e.target.reset();
+            Swal.fire({ icon: 'success', title: 'Kaydedildi', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+        };
+
+        function deleteSub(id) {
+            subs = subs.filter(s => s.id !== id);
+            save();
+        }
+
+        function save() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(subs));
+            render();
+        }
+
+        function render() {
+            const list = document.getElementById('assetList');
+            list.innerHTML = '';
+            let total = 0;
+
+            subs.sort((a,b) => a.day - b.day).forEach(s => {
+                total += s.price;
+                const rem = calcRem(s.day);
+                const badge = rem <= 3 ? 'badge-urgent' : 'badge-safe';
+
+                list.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="service-info">
+                                <div class="service-icon">${getIcon(s.cat)}</div>
+                                <div class="service-name">${s.name}</div>
+                            </div>
+                        </td>
+                        <td style="font-weight:700; color:var(--text-secondary); font-size:0.85rem;">${s.cat}</td>
+                        <td><span class="badge ${badge}">${rem === 0 ? 'Bugün' : rem + ' Gün Kaldı'}</span></td>
+                        <td style="font-weight:900; color:#000;">${s.price.toLocaleString('tr-TR')} ₺</td>
+                        <td style="text-align:right;">
+                            <button onclick="deleteSub('${s.id}')" style="background:none; border:none; color:#d1d5db; cursor:pointer; transition:0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#d1d5db'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('totalM').innerText = total.toLocaleString('tr-TR', {minimumFractionDigits:2}) + ' ₺';
+            document.getElementById('totalY').innerText = (total * 12).toLocaleString('tr-TR', {minimumFractionDigits:2}) + ' ₺';
+            document.getElementById('countS').innerText = subs.length;
+
+            updateChart();
+        }
+
+        function calcRem(d) {
+            const now = new Date().getDate();
+            return d >= now ? d - now : (30 - now) + d;
+        }
+
+        function getIcon(cat) {
+            const icons = { 'Yazılım': '<i class="fas fa-laptop-code"></i>', 'Eğlence': '<i class="fas fa-play"></i>', 'Eğitim': '<i class="fas fa-book-open"></i>' };
+            return icons[cat] || '<i class="fas fa-cube"></i>';
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            const dataMap = {};
+            subs.forEach(s => dataMap[s.cat] = (dataMap[s.cat] || 0) + s.price);
+
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(dataMap),
+                    datasets: [{
+                        data: Object.values(dataMap),
+                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#e11d48'],
+                        borderWidth: 0,
+                        hoverOffset: 20
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 30, font: { family: 'Inter', weight: '700' } } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
